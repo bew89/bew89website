@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="WebpageIcon.svg">
+    <link rel="stylesheet" href="Bew89.css">
+    <title>File Share</title>
+</head>
+<body>
+<header> File Sharing</header>
+<p> Here you can see files, uploaded by others which you can view and download</p>
+<form id="file_upload" enctype="multipart/form-data" method="post" action="FileManagement.php">
+    <input type="file" id="fileInput" name="file" required/>
+    <input type="text" placeholder="Give it a name..." id="fileName" name="fileName">
+    <button type="submit">Upload File</button>
+</form>
+<script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/ring2.js"></script>
+
+<div id="loadingBox">
+    <l-ring-2
+            id="loading"
+            size="40"
+            stroke="5"
+            stroke-length="0.25"
+            bg-opacity="0.1"
+            speed="0.8"
+            color="black"
+    ></l-ring-2>
+</div>
+<div id="message"></div>
+
+<div id="futurePlans">
+    <details>
+        <summary> Future Plans</summary>
+        <p> Add ability for user to remove files they have uploaded.
+            This will require user authentication.</p>
+        <p> Search function </p>
+        <p> Filter Function </p>
+        <p id="finishedPlan"> Converting image filenames to json instead of txt </p>
+    </details>
+</div>
+
+<h2> File Gallery </h2>
+<div id="sizeManager">
+    <button type="button" id="smallIcon"> Small Icons</button>
+    <button type="button" id="mediumIcon"> Medium Icons</button>
+    <button type="button" id="largeIcon"> Large Icons</button>
+</div>
+<!-- Where all the images and files will be held -->
+<div id="image-container"></div>
+
+<script>
+
+    document.getElementById('file_upload').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        //Show loading icon
+        document.getElementById('loading').style.display = `block`;
+        let formData = new FormData(this);
+        let fileName = document.getElementById('fileName').value.trim();
+        formData.append('fileName', fileName);
+
+        console.log(formData)
+        fetch('FileManagement.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())  // Get the response as text
+            .then(response => {
+
+                //remove loading
+                document.getElementById('loading').style.display = `none`;
+
+                document.getElementById('message').innerText = response.message;  // Display the message
+
+                console.log(response.name)
+                console.log(response.type)
+
+                if (response.image_success) {
+                    const file = response.fileUrl;
+                    const typeOfFile = response.type.split('.')[1]
+                    if (['png', 'jpg', 'jpeg', 'gif', 'HEIC', 'HEIF'].includes(typeOfFile)) {
+                        console.log(response.fileUrl)
+                        checkFile();
+                    } else {
+                        console.log("didnt work")
+                        // image.style.display = 'none';  // Hide the image if it's not a supported type
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('message').innerText = 'An error occurred while uploading the file.';
+            });
+
+    });
+
+    function checkFile() {
+        fetch('filenames.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const container = document.getElementById('image-container')
+                container.innerText = '';
+                data.forEach(item => {
+
+                    //div to hold all
+                    const div = document.createElement('div');
+                    //create image
+                    const img = document.createElement('img');
+                    img.src = `/uploads/${item.name}`
+                    img.onerror = function () {
+                        img.src = `FileIcon`;
+                    };
+                    img.alt = item.name
+                    const caption = document.createElement('figcaption');
+                    caption.innerText = img.alt;
+                    const figure = document.createElement('figure');
+                    figure.appendChild(caption)
+                    //create download link so downloads when clicked
+                    const link = document.createElement('a');
+                    link.href = `/uploads/${item.name}`;
+                    link.download = '';
+
+
+                    link.appendChild(img)
+                    figure.appendChild(link)
+                    div.appendChild(figure)
+                    container.appendChild(div)
+
+                })
+            })
+            .catch(error => {
+                console.error('Error reading file:', error);
+            });
+    }
+
+    function mobile() {
+        return window.innerWidth < 600;
+    }
+
+    document.getElementById('smallIcon').addEventListener('click', function () {
+        let size = 10
+
+        let fontSize = 13
+        let padding = 10;
+
+        const isMobile = mobile()
+        if (isMobile === true) {
+            size = 25
+        }
+
+        changeSizeOfImages(size, fontSize, padding)
+    })
+    document.getElementById('mediumIcon').addEventListener('click', function () {
+        let size = 25
+        let fontSize = 30
+        let padding = 25;
+
+        const isMobile = mobile()
+        if (isMobile === true) {
+            fontSize /= 2
+            size = 40
+        }
+        changeSizeOfImages(size, fontSize, padding)
+    })
+    document.getElementById('largeIcon').addEventListener('click', function () {
+        let size = 100
+        let fontSize = 50
+        let padding = 30;
+        const isMobile = mobile()
+        if (isMobile === true) {
+            fontSize /= 2
+            size = 80
+        }
+
+        changeSizeOfImages(size, fontSize, padding)
+    })
+
+    function changeSizeOfImages(size, fontSize, padding) {
+
+        const images = document.querySelectorAll('#image-container img');
+        const captions = document.querySelectorAll('figcaption');
+        const divs = document.querySelectorAll('#image-container div')
+
+        //----------------------------------
+        images.forEach(function (image, index) {
+            const caption = captions[index];
+            const div = divs[index]
+
+            caption.style.fontSize = `${fontSize}px`;
+            caption.style.maxWidth = `${size}vw`;
+            caption.style.paddingBottom = `${padding}px`
+            caption.style.paddingTop = `${padding}px`
+
+            image.style.maxHeight = `${size}vw`;
+            image.style.maxWidth = `${size}vw`;
+            div.style.maxWidth = `${size}vw`
+        });
+    }
+
+    checkFile() //Load files
+
+
+</script>
+</body>
+</html>

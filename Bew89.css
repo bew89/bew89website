@@ -1,0 +1,194 @@
+body {
+    background-color: gainsboro;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+#loading {
+    display: none;
+}
+#loadingBox{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+
+header {
+    text-align: center;
+    font-size: 50px;
+}
+
+#file_upload {
+    text-align: center;
+    margin-top: 25px;
+}
+
+#fileName {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+#image-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%; /* Ensure it takes full width */
+    height: auto;
+
+}
+
+img {
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    transition: 0.5s ease-in-out;
+    border-radius: 0;
+    max-width: 200px;
+    max-height: 200px;
+    display: block;
+    overflow: hidden;
+}
+
+figure:hover img {
+    transition: 0.5s ease-in-out;
+    border-bottom-left-radius: 25%;
+    border-bottom-right-radius: 25%;
+}
+
+figure:hover figcaption {
+    transition: 0.65s ease-in-out;
+
+    border-top-left-radius: 100%;
+    border-top-right-radius: 100%;
+
+
+}
+#futurePlans{
+    width: 250px;
+    margin: auto;
+
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: darkgrey;
+}
+#futurePlans p{
+    background-color: lightgrey;
+    border-radius: 10px;
+    padding: 10px;
+
+}
+
+#finishedPlan {
+    text-decoration: line-through;
+    text-decoration-color: red;
+}
+
+div {
+    padding: 10px
+}
+
+figure {
+    text-align: center;
+    margin: 0; /* optional, to remove default margin */
+    border-radius: 0;
+}
+
+/*figcaption {*/
+/*    text-align: center;*/
+/*    font-size: 20px; !* adjust the font size as needed *!*/
+/*}*/
+
+figcaption {
+    text-align: center;
+    font-size: 25px;
+    max-width: 100%;
+    color: #333;
+    background-color: rgba(120, 120, 120, 0.8);
+    padding-top: 25px;
+    padding-bottom: 25px;
+    transition: 0.35s ease-in-out;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-top: 25px;
+
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+}
+
+
+/*----------------------------------------------*/
+
+#fileInput {
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: white;
+    border: 2px solid black;
+
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Hide the default file input text */
+
+#fileInput::-webkit-file-upload-button {
+    display: none;
+    padding: 10px;
+}
+
+/* Custom file input style */
+
+#fileInput::before {
+    content: 'Choose a file';
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 50px;
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    text-align: center;
+}
+
+#fileInput:active::before {
+    background-color: #e2e6ea;
+}
+
+/*----------------------------------------------*/
+@media (max-width: 600px) {
+
+    /*#image-container {*/
+    /*    display: flex;*/
+    /*    flex-direction: column;*/
+    /*    align-items: center;*/
+    /*    gap: 10px;*/
+    /*}*/
+    #image-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    button{
+        padding: 10px 10px;
+        border: 1px black solid;
+
+    }
+
+}
+
